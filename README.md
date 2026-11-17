@@ -57,6 +57,17 @@ The application includes role-based permissions, project management, issue track
 | Docker Compose | Application and database management |
 | Git & GitHub | Version control |
 
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Create Issue
+![Create Issue](screenshots/create-issue.png)
+
+### All Issues
+![All Issues](screenshots/all-issues.png)
+
 ## 🏗️ Project Structure
 
 ```text
