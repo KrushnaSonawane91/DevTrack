@@ -1,0 +1,65 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | DevTrack{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>{{ page_title|default:"Create Project" }}</h1>
+        <p class="muted">
+            Create a project and invite team members to collaborate.
+        </p>
+    </div>
+
+    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+</div>
+
+<div class="form-container">
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="filter-field">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small class="muted">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% if field.errors %}
+                    <div class="field-error">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div class="heading-actions">
+            <button type="submit" class="btn btn-primary">
+                {% if project %}Update Project{% else %}Create Project{% endif %}
+            </button>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

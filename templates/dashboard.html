@@ -1,0 +1,292 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | DevTrack{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="muted">
+            Welcome back, {{ user.username }}! Here's your workspace overview.
+        </p>
+    </div>
+
+    <div class="heading-actions">
+        <a href="{% url 'project_create' %}" class="btn-secondary">
+            + New Project
+        </a>
+        <a href="{% url 'issue_create' %}" class="btn-primary">
+            + Create Issue
+        </a>
+    </div>
+</div>
+
+<!-- Main Statistics -->
+<section class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-label">Total Projects</div>
+        <div class="stat-value">{{ total_projects }}</div>
+        <div class="stat-icon">▣</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Total Issues</div>
+        <div class="stat-value">{{ total_issues }}</div>
+        <div class="stat-icon">☷</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Open Issues</div>
+        <div class="stat-value">{{ open_issues }}</div>
+        <div class="stat-icon">◷</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value">{{ in_progress_issues }}</div>
+        <div class="stat-icon">↻</div>
+    </div>
+
+</section>
+
+<!-- Issue Status -->
+<section class="dashboard-section">
+    <div class="section-heading">
+        <div>
+            <h2>Issue Status</h2>
+            <p class="muted">Track the progress of your issues.</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-label">Open</div>
+            <div class="stat-value">{{ open_issues }}</div>
+            <span class="badge badge-open">Open</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">In Progress</div>
+            <div class="stat-value">{{ in_progress_issues }}</div>
+            <span class="badge badge-progress">In Progress</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Resolved</div>
+            <div class="stat-value">{{ resolved_issues }}</div>
+            <span class="badge badge-resolved">Resolved</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Closed</div>
+            <div class="stat-value">{{ closed_issues }}</div>
+            <span class="badge badge-closed">Closed</span>
+        </div>
+
+    </div>
+</section>
+
+<!-- Priority Overview -->
+<section class="dashboard-section">
+    <div class="section-heading">
+        <div>
+            <h2>Priority Overview</h2>
+            <p class="muted">Issues grouped by priority level.</p>
+        </div>
+        <a href="{% url 'issue_list' %}" class="text-link">
+            View all issues →
+        </a>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-label">Critical Priority</div>
+            <div class="stat-value">{{ critical_priority_issues }}</div>
+            <span class="badge badge-critical">Critical</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">High Priority</div>
+            <div class="stat-value">{{ high_priority_issues }}</div>
+            <span class="badge badge-high">High</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Medium Priority</div>
+            <div class="stat-value">{{ medium_priority_issues }}</div>
+            <span class="badge badge-medium">Medium</span>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Low Priority</div>
+            <div class="stat-value">{{ low_priority_issues }}</div>
+            <span class="badge badge-low">Low</span>
+        </div>
+
+    </div>
+</section>
+
+<!-- Projects -->
+<section class="dashboard-section">
+
+    <div class="section-heading">
+        <div>
+            <h2>My Projects</h2>
+            <p class="muted">Projects you own or collaborate on.</p>
+        </div>
+
+        <a href="{% url 'project_create' %}" class="text-link">
+            + Add Project
+        </a>
+    </div>
+
+    {% if projects %}
+        <div class="cards">
+
+            {% for project in projects %}
+                <div class="card project-card">
+
+                    <div class="project-card-top">
+                        <div class="project-icon">▣</div>
+                        <span class="badge badge-open">Active</span>
+                    </div>
+
+                    <h3>{{ project.name }}</h3>
+
+                    <p class="muted">
+                        {% if project.description %}
+                            {{ project.description|truncatewords:18 }}
+                        {% else %}
+                            No project description available.
+                        {% endif %}
+                    </p>
+
+                    <div class="project-meta">
+                        <span>☷ {{ project.issues.count }} Issues</span>
+                        <span>👥 {{ project.members.count }} Members</span>
+                    </div>
+
+                    {% if project.owner_id == user.id or user.is_superuser %}
+                        <div class="heading-actions">
+                            <a
+                                href="{% url 'project_update' project.pk %}"
+                                class="btn-secondary"
+                            >
+                                Edit Project
+                            </a>
+                        </div>
+                    {% endif %}
+
+                </div>
+            {% endfor %}
+
+        </div>
+    {% else %}
+        <div class="card empty-state">
+            <h3>No projects yet</h3>
+            <p class="muted">
+                Create your first project to start tracking development work.
+            </p>
+            <a href="{% url 'project_create' %}" class="btn-primary">
+                Create Your First Project
+            </a>
+        </div>
+    {% endif %}
+
+</section>
+
+<!-- Recent Issues -->
+<section class="dashboard-section">
+
+    <div class="section-heading">
+        <div>
+            <h2>Recent Issues</h2>
+            <p class="muted">
+                Latest reported issues across your workspace.
+            </p>
+        </div>
+
+        <a href="{% url 'issue_list' %}" class="text-link">
+            View all issues →
+        </a>
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Project</th>
+                    <th>Reporter</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for issue in recent_issues %}
+                    <tr>
+                        <td>
+                            <a
+                                href="{% url 'issue_detail' issue.pk %}"
+                                class="table-link"
+                            >
+                                {{ issue.title }}
+                            </a>
+                        </td>
+
+                        <td>{{ issue.project.name }}</td>
+
+                        <td>{{ issue.reporter.username }}</td>
+
+                        <td>
+                            {% if issue.priority == "CRITICAL" %}
+                                <span class="badge badge-critical">Critical</span>
+                            {% elif issue.priority == "HIGH" %}
+                                <span class="badge badge-high">High</span>
+                            {% elif issue.priority == "MEDIUM" %}
+                                <span class="badge badge-medium">Medium</span>
+                            {% else %}
+                                <span class="badge badge-low">Low</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if issue.status == "OPEN" %}
+                                <span class="badge badge-open">Open</span>
+                            {% elif issue.status == "IN_PROGRESS" %}
+                                <span class="badge badge-progress">In Progress</span>
+                            {% elif issue.status == "RESOLVED" %}
+                                <span class="badge badge-resolved">Resolved</span>
+                            {% else %}
+                                <span class="badge badge-closed">Closed</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ issue.created_at|date:"d M Y" }}</td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-table">
+                            No issues have been reported yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
+{% endblock %}

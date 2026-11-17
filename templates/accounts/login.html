@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Login to DevTrack</h1>
+    <p>Sign in to manage your projects and issues.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Login</button>
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="{% url 'register' %}">Create an account</a>
+    </p>
+</div>
+{% endblock %}

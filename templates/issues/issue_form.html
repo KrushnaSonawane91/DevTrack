@@ -1,0 +1,101 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - DevTrack{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <h1>{{ page_title|default:"Create Issue" }}</h1>
+        <p class="muted">Enter the issue details below.</p>
+    </div>
+    <a href="{% url 'issue_list' %}" class="btn btn-secondary">
+        Back to Issues
+    </a>
+</div>
+
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="filter-field">
+            <label for="{{ form.title.id_for_label }}">Issue Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="field-error">{{ form.title.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="field-error">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.project.id_for_label }}">Project</label>
+            <select name="project" id="{{ form.project.id_for_label }}" required>
+                <option value="">-- Select a project --</option>
+                {% for project in form.project.field.queryset %}
+                    <option value="{{ project.pk }}"
+                        {% if form.project.value|stringformat:"s" == project.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ project.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            {% if form.project.errors %}
+                <div class="field-error">{{ form.project.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.assignee.id_for_label }}">Assignee</label>
+            {{ form.assignee }}
+            {% if form.assignee.errors %}
+                <div class="field-error">{{ form.assignee.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <div class="field-error">{{ form.status.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.priority.id_for_label }}">Priority</label>
+            {{ form.priority }}
+            {% if form.priority.errors %}
+                <div class="field-error">{{ form.priority.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="filter-field">
+            <label for="{{ form.issue_type.id_for_label }}">Issue Type</label>
+            {{ form.issue_type }}
+            {% if form.issue_type.errors %}
+                <div class="field-error">{{ form.issue_type.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div class="heading-actions">
+            <button type="submit" class="btn btn-primary">
+                Save Issue
+            </button>
+            <a href="{% url 'issue_list' %}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,256 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ issue.title }} | DevTrack{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="page-heading">
+    <div>
+        <a href="{% url 'issue_list' %}" class="text-link">
+            ← Back to All Issues
+        </a>
+        <h1 style="margin-top: 12px;">{{ issue.title }}</h1>
+        <p class="muted">
+            Issue #{{ issue.pk }} · Created {{ issue.created_at|date:"d M Y" }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+    <div class="heading-actions">
+        <a href="{% url 'issue_update' issue.pk %}" class="btn-primary">
+            Edit Issue
+        </a>
+        <a href="{% url 'issue_delete' issue.pk %}" class="btn-secondary">
+            Delete Issue
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Issue Overview -->
+<div class="dashboard-section">
+
+    <div class="card">
+        <div class="section-heading">
+            <div>
+                <h2>Issue Overview</h2>
+                <p class="muted">Details and current status of this issue.</p>
+            </div>
+
+            {% if issue.status == "OPEN" %}
+                <span class="badge badge-open">Open</span>
+            {% elif issue.status == "IN_PROGRESS" %}
+                <span class="badge badge-progress">In Progress</span>
+            {% elif issue.status == "RESOLVED" %}
+                <span class="badge badge-resolved">Resolved</span>
+            {% else %}
+                <span class="badge badge-closed">Closed</span>
+            {% endif %}
+        </div>
+
+        <div class="detail-description">
+            <h3>Description</h3>
+            <p>
+                {{ issue.description|default:"No description provided."|linebreaksbr }}
+            </p>
+        </div>
+
+        <hr>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-label">Project</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.project.name }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Reporter</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.reporter.username }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Assignee</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.assignee.username|default:"Unassigned" }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Priority</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {% if issue.priority == "CRITICAL" %}
+                        <span class="badge badge-critical">Critical</span>
+                    {% elif issue.priority == "HIGH" %}
+                        <span class="badge badge-high">High</span>
+                    {% elif issue.priority == "MEDIUM" %}
+                        <span class="badge badge-medium">Medium</span>
+                    {% else %}
+                        <span class="badge badge-low">Low</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Issue Type</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.get_issue_type_display }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Created On</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.created_at|date:"d M Y" }}
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Last Updated</div>
+                <div class="stat-value" style="font-size: 17px;">
+                    {{ issue.updated_at|date:"d M Y" }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Comments Section -->
+<div class="dashboard-section">
+
+    <div class="card">
+
+        <div class="section-heading">
+            <div>
+                <h2>Comments</h2>
+                <p class="muted">
+                    {{ comments|length }} comments on this issue.
+                </p>
+            </div>
+        </div>
+
+        {% if comment_error %}
+            <div class="alert error">
+                {{ comment_error }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="comment-form">
+            {% csrf_token %}
+
+            <div class="filter-field">
+                <label for="body">Add a comment</label>
+                <textarea
+                    id="body"
+                    name="body"
+                    rows="4"
+                    maxlength="5000"
+                    placeholder="Write your comment here..."
+                    required
+                ></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Post Comment
+            </button>
+        </form>
+
+        <hr>
+
+        {% for comment in comments %}
+            <div class="comment-item">
+
+                <div class="comment-header">
+                    <div class="avatar">
+                        {{ comment.author.username|first|upper }}
+                    </div>
+
+                    <div>
+                        <strong>{{ comment.author.username }}</strong>
+                        <small class="muted">
+                            {{ comment.created_at|date:"d M Y, H:i" }}
+                        </small>
+                    </div>
+                </div>
+
+                <p class="comment-body">
+                    {{ comment.body|linebreaksbr }}
+                </p>
+
+            </div>
+            <hr>
+
+        {% empty %}
+            <div class="empty-state">
+                <h3>No comments yet</h3>
+                <p class="muted">
+                    Be the first person to comment on this issue.
+                </p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- Activity History -->
+<div class="dashboard-section">
+
+    <div class="card">
+
+        <div class="section-heading">
+            <div>
+                <h2>Activity History</h2>
+                <p class="muted">
+                    Track the changes and updates made to this issue.
+                </p>
+            </div>
+        </div>
+
+        {% for activity in activities %}
+
+            <div class="activity-item">
+
+                <div class="activity-icon">↻</div>
+
+                <div class="activity-content">
+                    <strong>{{ activity.get_action_display }}</strong>
+
+                    <p>{{ activity.message }}</p>
+
+                    <small class="muted">
+                        {% if activity.user %}
+                            {{ activity.user.username }}
+                        {% else %}
+                            System
+                        {% endif %}
+                        · {{ activity.created_at|date:"d M Y, H:i" }}
+                    </small>
+                </div>
+
+            </div>
+
+            <hr>
+
+        {% empty %}
+            <div class="empty-state">
+                <h3>No activity recorded</h3>
+                <p class="muted">
+                    Updates to this issue will appear here.
+                </p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

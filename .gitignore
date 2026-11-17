@@ -1,0 +1,31 @@
+# Environment variables and secrets
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+
+# Django
+staticfiles/
+media/
+*.log
+
+# Database
+db.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Git
+.DS_Store
+Thumbs.db
+
+# Project notes
+project_structure.txt

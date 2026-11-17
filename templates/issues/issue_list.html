@@ -1,0 +1,221 @@
+
+{% extends "base.html" %}
+
+{% block title %}All Issues | DevTrack{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <h1>All Issues</h1>
+        <p class="muted">Track, search and manage development issues across your projects.</p>
+    </div>
+
+    <a href="{% url 'issue_create' %}" class="btn-primary">
+        + Create Issue
+    </a>
+</div>
+
+<!-- Search and Filters -->
+<div class="card filter-card">
+    <div class="section-heading">
+        <div>
+            <h2>Search & Filters</h2>
+            <p class="muted">Find issues using keywords and filters.</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-form">
+
+        <div class="filter-field">
+            <label for="search">Search Issues</label>
+            <input
+                id="search"
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search title, description or project..."
+            >
+        </div>
+
+        <div class="filter-field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">All Statuses</option>
+                {% for value, label in statuses %}
+                    <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority">
+                <option value="">All Priorities</option>
+                {% for value, label in priorities %}
+                    <option value="{{ value }}" {% if selected_priority == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="issue_type">Issue Type</label>
+            <select id="issue_type" name="issue_type">
+                <option value="">All Types</option>
+                {% for value, label in issue_types %}
+                    <option value="{{ value }}" {% if selected_issue_type == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="sort">Sort By</label>
+            <select id="sort" name="sort">
+                <option value="newest" {% if selected_sort == "newest" %}selected{% endif %}>
+                    Newest First
+                </option>
+                <option value="oldest" {% if selected_sort == "oldest" %}selected{% endif %}>
+                    Oldest First
+                </option>
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn-primary">
+                Apply Filters
+            </button>
+
+            <a href="{% url 'issue_list' %}" class="btn-secondary">
+                Clear Filters
+            </a>
+        </div>
+
+    </form>
+</div>
+
+<!-- Issues Table -->
+<div class="dashboard-section">
+
+    <div class="section-heading">
+        <div>
+            <h2>Issue List</h2>
+            <p class="muted">
+                {{ page_obj.paginator.count }} issues found
+            </p>
+        </div>
+
+        <span class="badge badge-open">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Project</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for issue in page_obj %}
+                    <tr>
+                        <td>
+                            <a
+                                href="{% url 'issue_detail' issue.pk %}"
+                                class="table-link"
+                            >
+                                {{ issue.title }}
+                            </a>
+                        </td>
+
+                        <td>{{ issue.project.name }}</td>
+
+                        <td>
+                            <span class="badge badge-low">
+                                {{ issue.get_issue_type_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if issue.priority == "CRITICAL" %}
+                                <span class="badge badge-critical">Critical</span>
+                            {% elif issue.priority == "HIGH" %}
+                                <span class="badge badge-high">High</span>
+                            {% elif issue.priority == "MEDIUM" %}
+                                <span class="badge badge-medium">Medium</span>
+                            {% else %}
+                                <span class="badge badge-low">Low</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if issue.status == "OPEN" %}
+                                <span class="badge badge-open">Open</span>
+                            {% elif issue.status == "IN_PROGRESS" %}
+                                <span class="badge badge-progress">In Progress</span>
+                            {% elif issue.status == "RESOLVED" %}
+                                <span class="badge badge-resolved">Resolved</span>
+                            {% else %}
+                                <span class="badge badge-closed">Closed</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ issue.assignee|default:"Unassigned" }}
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-table">
+                            No issues match your search or filters.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<!-- Pagination -->
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="pagination">
+
+    {% if page_obj.has_previous %}
+        <a href="?search={{ search|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&issue_type={{ selected_issue_type|urlencode }}&sort={{ selected_sort|urlencode }}&page={{ page_obj.previous_page_number }}">
+            ← Previous
+        </a>
+    {% endif %}
+
+    <span>
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        ({{ page_obj.paginator.count }} issues)
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?search={{ search|urlencode }}&status={{ selected_status|urlencode }}&priority={{ selected_priority|urlencode }}&issue_type={{ selected_issue_type|urlencode }}&sort={{ selected_sort|urlencode }}&page={{ page_obj.next_page_number }}">
+            Next →
+        </a>
+    {% endif %}
+
+</div>
+{% endif %}
+
+{% endblock %}
