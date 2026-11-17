@@ -60,13 +60,13 @@ The application includes role-based permissions, project management, issue track
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 
 ### Create Issue
-![Create Issue](screenshots/create-issue.png)
+![Create Issue](screenshots/Create_Issue.png)
 
 ### All Issues
-![All Issues](screenshots/all-issues.png)
+![All Issues](screenshots/All_Issues.png)
 
 ## 🏗️ Project Structure
 
