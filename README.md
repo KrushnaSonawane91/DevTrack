@@ -1,179 +1,205 @@
-# DevTrack — Developer Issue Tracker
+# 🚀 DevTrack – Developer Issue Tracker
 
-A Django-based project and issue tracking application that helps development teams organize projects, track issues, collaborate through comments, and monitor progress.
+**DevTrack** is a web-based Developer Issue Tracking System built with Django and PostgreSQL. It helps development teams manage projects, track software issues, collaborate through comments, and monitor issue progress from a centralized dashboard.
 
-**Built with Python, Django, Django REST Framework, PostgreSQL, Docker, HTML, and CSS.**
+The application includes role-based permissions, project management, issue tracking, activity history, and REST API support.
 
-[GitHub Repository](https://github.com/KrushnaSonawane91/DevTrack)
+## ✨ Key Features
 
-## Features
+### 📊 Dashboard
+- Overview of total projects and issues.
+- Issue statistics based on status.
+- Priority-wise issue overview.
+- Centralized workspace for users.
 
-### User Authentication
-- User registration and login
-- Secure session-based authentication
-- Logout functionality
+### 📁 Project Management
+- Create and manage projects.
+- Edit project details.
+- Add team members to projects.
+- View projects based on ownership and membership.
 
-### Project Management
-- Create and edit projects
-- Assign team members to projects
-- View projects you own or participate in
-- Project owner-based editing permissions
+### 🐛 Issue Tracking
+- Create, view, update, and delete issues.
+- Track issue status and priority.
+- Categorize issues by type.
+- Search and filter issues.
+- Sort and paginate issue lists.
+- View detailed issue information.
 
-### Issue Management
-- Create, view, edit, and delete issues
-- Assign issues to projects and users
-- Track issue status and priority
-- Categorize issues as bugs, features, or tasks
-- Search and filter issues
-- Sort issues and navigate paginated results
+### 💬 Collaboration
+- Add comments to issues.
+- View issue activity history.
+- Allow team members to collaborate on shared issues.
 
-### Collaboration
-- Add comments to issues
-- View issue activity history
-- Allow authenticated users to view and comment on shared issues
-- Restrict issue editing and deletion to authorized users
+### 🔐 Authentication & Authorization
+- User registration and login.
+- Secure logout functionality.
+- Login-required access to protected pages.
+- Permission-based project and issue management.
 
-### Dashboard
-- View project and issue statistics
-- Monitor issue statuses and priorities
-- Access recent issues and project information
+### 🔌 REST API
+- REST API developed using Django REST Framework.
+- API support for dashboard, projects, issues, and comments.
+- Authentication using Session and Basic Authentication.
+- Protected API endpoints using `IsAuthenticated`.
 
-### REST API
-- Django REST Framework integration
-- API endpoints for dashboard, projects, issues, and comments
-- Authentication-protected API access
-- Session and Basic authentication support
+## 🛠️ Tech Stack
 
-## Technology Stack
-
-| Category | Technologies |
+| Technology | Purpose |
 |---|---|
-| Backend | Python, Django |
-| REST API | Django REST Framework |
-| Database | PostgreSQL |
-| Frontend | HTML, CSS, JavaScript |
-| Containerization | Docker, Docker Compose |
-| Testing | Django Test Framework |
-| Version Control | Git, GitHub |
+| Python | Backend programming |
+| Django | Web framework |
+| Django REST Framework | REST API development |
+| PostgreSQL | Database |
+| HTML5 | Frontend structure |
+| CSS3 | Frontend styling |
+| Docker | Containerization |
+| Docker Compose | Application and database management |
+| Git & GitHub | Version control |
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```text
 DevTrack/
 │
 ├── accounts/             # User authentication
-├── api/                  # REST API
 ├── config/               # Django project configuration
-├── issues/               # Issue models and functionality
-├── projects/             # Projects application
-├── project_manager/      # Project and dashboard management
-├── static/
-│   └── css/              # Stylesheets
+├── issues/               # Issue tracking and comments
+├── project_manager/      # Project management
+├── projects/             # Project-related functionality
 ├── templates/            # HTML templates
+├── static/
+│   └── css/              # CSS stylesheets
 │
-├── Dockerfile
-├── docker-compose.yml
-├── manage.py
-├── requirements.txt
-└── .gitignore
+├── Dockerfile            # Docker configuration
+├── docker-compose.yml    # Application services
+├── requirements.txt      # Python dependencies
+├── manage.py             # Django management utility
+├── .gitignore
+└── README.md
 ```
 
-## Getting Started
+## ⚙️ Installation & Setup
 
 ### Prerequisites
 
-- Git
+Make sure you have installed:
+
+- Python
 - Docker Desktop
-- Docker Compose
+- Git
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/KrushnaSonawane91/DevTrack.git
+```
+
+### 2. Navigate to the project directory
+
+```bash
 cd DevTrack
 ```
 
-### 2. Configure environment variables
+### 3. Configure environment variables
 
-Create a local `.env` file using the variable names and configuration expected by `docker-compose.yml` and Django settings.
+Check the project's Docker Compose and Django settings for the required environment variables. Create a local `.env` file with the required values if your configuration uses one.
 
-Do not commit `.env` or expose database passwords and secret keys.
-
-### 3. Build and start the application
+### 4. Build and start the application
 
 ```bash
 docker compose up -d --build
 ```
 
-### 4. Open the application
+This starts the Django application and PostgreSQL database using Docker Compose.
 
-Visit:
+### 5. Access the application
+
+Open your browser and visit:
 
 ```text
 http://127.0.0.1:8000/
 ```
 
-### 5. Create an administrator account
-
-```bash
-docker compose exec web python manage.py createsuperuser
-```
-
-Follow the prompts to create your account.
-
-## Running Tests
-
-Run the project-management tests:
-
-```bash
-docker compose exec web python manage.py test project_manager
-```
-
-Run the complete test suite:
-
-```bash
-docker compose exec web python manage.py test
-```
-
-The project has successfully passed **33 automated tests** during development.
-
-## API Endpoints
-
-The API includes endpoints for:
-
-| Endpoint | Purpose |
-|---|---|
-| `/api/dashboard/` | Dashboard information |
-| `/api/issues/` | Issue management |
-| Project endpoints | Project management |
-| Comment endpoints | Issue comments |
-
-API access requires authentication.
-
-## Permissions
-
-- All authenticated users can view and comment on shared issues.
-- Issue reporters, project owners, and administrators can edit or delete issues.
-- Project owners and administrators can edit projects.
-- Project owners can manage their project teams.
-
-## Stopping the Application
+### 6. Stop the application
 
 ```bash
 docker compose down
 ```
 
-This stops the containers without deleting the PostgreSQL data volume.
+## 🔌 API Documentation
 
-## Developer
+DevTrack provides REST API functionality through Django REST Framework.
+
+Available API functionality includes:
+
+- Dashboard statistics
+- Project management
+- Issue management
+- Issue comments
+
+The API uses authentication and permission controls to protect endpoints.
+
+The main API routes include:
+
+```text
+/api/dashboard/
+/api/issues/
+```
+
+Additional project and comment endpoints are provided by the application.
+
+## 🔒 Access Control & Permissions
+
+DevTrack implements permission-based access control.
+
+| Action | Permission |
+|---|---|
+| View shared issues | Authenticated users |
+| Add issue comments | Authenticated users |
+| Edit an issue | Reporter, project owner, or admin |
+| Delete an issue | Reporter, project owner, or admin |
+| Edit a project | Project owner or admin |
+| Create a project | Authenticated users |
+
+## 🧪 Testing
+
+The project includes automated tests covering application functionality and permissions.
+
+**Test results:**
+- 33 automated tests passed.
+- Project management permissions tested.
+- Issue management functionality tested.
+- Authentication and access controls tested.
+
+Run the test suite using:
+
+```bash
+docker compose exec web python manage.py test
+```
+
+Check the Django project configuration:
+
+```bash
+docker compose exec web python manage.py check
+```
+
+## 🎯 Project Objectives
+
+- Build a practical issue tracking application using Django.
+- Understand backend development and database integration.
+- Implement authentication and authorization.
+- Develop REST APIs using Django REST Framework.
+- Work with PostgreSQL and Docker.
+- Apply automated testing to improve application reliability.
+
+## 👨‍💻 Author
 
 **Krushna Sonawane**
 
-Computer Engineering Graduate | Python Developer
-
 - GitHub: [KrushnaSonawane91](https://github.com/KrushnaSonawane91)
-- LinkedIn: [Krushna Sonawane](https://www.linkedin.com/in/krushna-sonawane-223725288/)
+- LinkedIn: [Connect on LinkedIn](https://www.linkedin.com/in/krushna-sonawane-223725288)
 
 ---
 
-*DevTrack is a portfolio project developed to demonstrate Django application development, database integration, REST API development, authentication, permissions, Docker, and automated testing.*
+⭐ If you find this project useful, consider giving it a star!
